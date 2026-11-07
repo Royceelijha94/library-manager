@@ -1,61 +1,78 @@
 # Campus Library Manager
 
-A small, in-memory Python assignment demonstrating abstraction, inheritance,
-polymorphism, encapsulation, and exception handling. No external packages are needed.
-All starter constructors have been corrected from `init` to `__init__`.
+This program keeps track of books, magazines and DVDs borrowed by library members.
+It checks whether an item is available, limits how many items a member can borrow,
+and calculates a late fee when an item is returned.
 
-## Run
+## Running the program
 
-Use Python 3.12 or later. From this folder:
+You need Python 3.12 or later. No extra packages are needed.
+From the `library_manager` folder, run:
 
 ```sh
-python3 --version
 python3 main.py
 ```
 
-On Windows use `py -3 main.py` with Python 3.12+ selected.
-To regenerate the saved console transcript, run `python3 main.py > output.txt`.
-The submitted output was captured using Python 3.14.5.
+On Windows, use `py -3 main.py` with Python 3.12 or later.
+The demo uses Alice and Bob to show successful borrowing and returns, followed by
+some deliberate mistakes. Messages such as "Could not borrow" are expected:
+they show that the program catches the errors and keeps running.
 
-## Files and behaviour
+## What is in this folder?
 
-- `models.py`: abstract `LibraryItem`, concrete `Book`, `Magazine`, `DVD`, and `Member`.
-- `main.py`: two members, three items, normal borrowing/returns, caught errors,
-  mixed-item fee calculations, abstract-class rejection, and private-state demonstrations.
-- `output.txt`: the full output of the final demo run.
+- `models.py` contains the item classes and the `Member` class.
+- `main.py` runs the examples.
+- `output.txt` contains the output from running the demo.
+- `README.md` explains the program and answers the reflection questions below.
 
-Books charge Rs 2/day, magazines Rs 1/day, and DVDs Rs 5/day; three days cost
-Rs 6, Rs 3, and Rs 15 respectively. On-time returns cost Rs 0.
-Members default to a three-item limit; Bob's one-item limit demonstrates rejection.
-Titles and names must be non-empty strings; IDs, limits, issue numbers, and durations
-must be positive integers; days late must be a non-negative integer. Booleans are
-rejected as integer input. Invalid borrowing and return operations raise `ValueError`
-with readable messages, and fee validation happens before any return state changes.
+The starter code used `init` for the constructors. These are corrected to
+`__init__` so Python calls them when objects are created.
 
-`borrowed_titles()` returns a fresh list, so modifying it cannot change the private
-loan list. Python double underscores use name mangling to prevent accidental access;
-they are not a security boundary. Use `Member.borrow()` and `Member.return_item()`
-to keep the loan list and availability synchronized; the low-level mark methods
-exist as required by the brief. This teaching example stores object references in
-memory; it does not persist records or enforce a central catalogue of unique IDs.
+Books cost Rs 2 per late day, magazines cost Rs 1, and DVDs cost Rs 5.
+For three days, the fees are Rs 6, Rs 3 and Rs 15. A return on time costs Rs 0.
+Alice has the default limit of three items, while Bob has a limit of one.
 
-## Reflection
+The program also checks for blank names, invalid IDs and negative or fractional
+days. IDs, limits, issue numbers and durations must be positive whole numbers;
+days late can be zero. Boolean values are not accepted as numbers.
+A return with invalid days leaves the item on the member's borrowed list.
 
-### Why is LibraryItem abstract, and what if DVD forgets late_fee()?
+To save a fresh copy of the output, run:
 
-`LibraryItem` defines common state and methods while requiring every concrete item
-to provide its own late-fee calculation. Instantiating it raises `TypeError`; if
-`DVD` omits `late_fee()`, DVD remains abstract and instantiating DVD also raises `TypeError`.
+```sh
+python3 main.py > output.txt
+```
 
-### What happens when reading item.__available, and why use is_available()?
+The saved output was checked using Python 3.14.5.
 
-Reading `item.__available` outside the class raises `AttributeError` because Python
-mangles the attribute name inside `LibraryItem`. `is_available()` exposes the state
-through a clear public method while changes go through the borrowing/return methods.
+## Reflection questions
 
-### How do LibraryItem.total_items and self.title differ?
+### 1. Why is LibraryItem abstract, and what happens if DVD forgets late_fee()?
 
-`LibraryItem.total_items` is a class attribute shared across item types and counts
-successfully constructed items during the current process. `self.title` is an
-instance attribute belonging to one particular item, so different objects can have
-different titles without changing each other's values.
+`LibraryItem` holds the behaviour that all items share, but each item type needs
+its own late fee. Making `late_fee()` abstract means the child classes must
+implement it. Creating a `LibraryItem` directly raises `TypeError`, and creating
+a `DVD` would do the same if it did not implement `late_fee()`.
+
+### 2. What happens when reading item.__available, and why use is_available()?
+
+Reading `item.__available` outside the class raises `AttributeError` because
+Python changes the internal name of a double-underscore attribute.
+`is_available()` gives us a simple way to read that value, while the borrow and
+return methods handle changes to it. This helps prevent accidental changes;
+it is not a security feature that makes access impossible.
+
+### 3. What is the difference between LibraryItem.total_items and self.title?
+
+`LibraryItem.total_items` belongs to the class and is shared by books, magazines
+and DVDs, so it counts the items created during that run.
+`self.title` belongs to one item, so each book, magazine or DVD can have its own title.
+
+## A couple of details
+
+`borrowed_titles()` returns a new list of titles. Changing that list does not
+change what the member has borrowed, as the demo shows.
+Use `Member.borrow()` and `Member.return_item()` to keep the borrowed list and
+availability in step; the item mark methods are included as required by the brief.
+The data is kept in memory and disappears when the program stops.
+There is no central catalogue to check for duplicate item IDs.

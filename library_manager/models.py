@@ -1,4 +1,4 @@
-"""Library items and members; requires Python 3.12+ and no packages."""
+"""Classes for the library items and the members who borrow them."""
 from abc import ABC, abstractmethod
 
 
@@ -38,7 +38,7 @@ class LibraryItem(ABC):
 
     @abstractmethod
     def late_fee(self, days_late):
-        """Return a fee for a non-negative whole number of days."""
+        """Each item type works out its own late fee."""
 
 
 class Book(LibraryItem):
@@ -108,7 +108,7 @@ class Member:
         self._validate_item(item)
         if item not in self.__borrowed:
             raise ValueError(f"{self.name} has not borrowed '{item.title}'.")
-        # Validate the fee before changing either object's state.
+        # Check the days first, so a bad value does not return the item by mistake.
         fee = item.late_fee(days_late)
         item.mark_returned()
         self.__borrowed.remove(item)
