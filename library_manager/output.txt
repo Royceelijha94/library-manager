@@ -1,0 +1,36 @@
+CAMPUS LIBRARY MANAGER
+
+Borrowing and errors
+Alice borrowed: Book: Python 101 by A. Rao (ID 1)
+Could not borrow: 'Python 101' is already borrowed.
+Duplicate borrowing refused: 'Python 101' is already borrowed.
+Bob borrowed: Magazine: Science Today, issue 42 (ID 2)
+Could not borrow: Bob has reached the borrow limit (1).
+Could not return: Bob has not borrowed 'Python 101'.
+
+Polymorphism: late fees for 3 days
+Book: Python 101 by A. Rao (ID 1) -> Rs 6
+Magazine: Science Today, issue 42 (ID 2) -> Rs 3
+DVD: Learning Python, 90 minutes (ID 3) -> Rs 15
+Total items created: 3
+
+Validation and returns
+Invalid return refused: Days late must be an integer of at least 0.
+Alice still holds the book: ['Python 101']
+Alice returned the book; fee: Rs 6
+Bob returned the magazine on time; fee: Rs 0
+Bob borrowed the DVD after freeing a slot.
+Bob returned the DVD; fee: Rs 15
+Repeated return refused: Bob has not borrowed 'Learning Python'.
+Invalid item refused: Item must be a LibraryItem object.
+Invalid days refused: Days late must be an integer of at least 0.
+
+Abstraction and encapsulation
+TypeError: LibraryItem is abstract and cannot be instantiated.
+AttributeError: __available is private; use is_available().
+AttributeError: __borrowed is private; use borrowed_titles().
+Clearing a returned titles list leaves Alice's loans intact: ['Python 101']
+Book available via is_available(): True
+Alice's final loans: []
+Bob's final loans: []
+All items available: True
